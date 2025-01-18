@@ -3,18 +3,24 @@ import { Link, useNavigate } from 'react-router-dom';
 import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/clerk-react";
 
 const Navbar = () => {
-  const { user } = useUser();
-  const isDoctor = user?.unsafeMetadata?.role === 'doctor';
+  const { user, isLoaded } = useUser();
   const navigate = useNavigate();
+  const isDoctor = user?.unsafeMetadata?.role === 'doctor';
 
   const handleLogoClick = (e) => {
     e.preventDefault();
-    if (!user) {
+    if (!isLoaded || !user) {
       navigate('/');
-    } else if (isDoctor) {
-      navigate('/doctor-home');
+      return;
+    }
+
+    const userRole = user?.unsafeMetadata?.role;
+    if (userRole === 'doctor') {
+      navigate('/patients');
+    } else if (userRole === 'patient') {
+      navigate('/patient/dashboard');
     } else {
-      navigate('/patient-home');
+      navigate('/');
     }
   };
 
@@ -33,24 +39,10 @@ const Navbar = () => {
                 </Link>
               </SignedOut>
               <SignedIn>
-                {isDoctor ? (
-                  <>
-                    <Link to="/patients" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md">
-                      Patients
-                    </Link>
-                    <Link to="/appointments" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md">
-                      Appointments
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <Link to="/my-appointments" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md">
-                      My Appointments
-                    </Link>
-                    <Link to="/find-doctors" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md">
-                      Find Doctors
-                    </Link>
-                  </>
+                {isDoctor && (
+                  <Link to="/patients" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md">
+                    Patients
+                  </Link>
                 )}
               </SignedIn>
             </div>

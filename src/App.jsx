@@ -9,6 +9,7 @@ import Footer from './components/Footer'
 import Patients from './components/Patients'
 import PatientDetails from './components/PatientDetails'
 import UserTypeSelection from './components/UserTypeSelection'
+import PatientDashboard from './components/PatientsPage/PatientDashboard';
 
 // Get Clerk publishable key from environment variable
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -67,6 +68,19 @@ function App() {
             <>
               <SignedIn>
                 <PatientDetails />
+              </SignedIn>
+              <SignedOut>
+                <RedirectToSignIn />
+              </SignedOut>
+            </>
+          }
+        />
+      <Route
+          path="/patient/dashboard"
+          element={
+            <>
+              <SignedIn>
+                <PatientDashboard />
               </SignedIn>
               <SignedOut>
                 <RedirectToSignIn />
